@@ -39,10 +39,15 @@ export default function Task(props) {
     const [input, setInput] = useState('');
 
     const updateTask = () => {
-        db.collection('tasks').doc(props.task.id).set({
-            task: input,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true })
+        try {
+            db.collection('tasks').doc(props.task.id).set({
+                task: input,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true })
+        } catch(error) {
+            alert(error);
+        }
+        
         setOpen(false);
     }
 
@@ -50,6 +55,14 @@ export default function Task(props) {
         if(timestamp){
             const date = new Date(timestamp.seconds*1000).toLocaleString();
             return date;
+        }
+    }
+
+    const deleteTask = () => {
+        try {
+            db.collection('tasks').doc(props.task.id).delete();
+        } catch(error) {
+            alert(error);
         }
     }
 
@@ -70,7 +83,7 @@ export default function Task(props) {
                 </Grid>
                 <Grid item className={classes.icons}>
                     <EditIcon onClick={e => setOpen(true)} />
-                    <DeleteForeverIcon onClick={event => db.collection('tasks').doc(props.task.id).delete()} />
+                    <DeleteForeverIcon onClick={deleteTask} />
                 </Grid>
             </Grid>
           </Paper>
