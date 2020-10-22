@@ -1,5 +1,5 @@
 import React, { useState }  from 'react'
-import { Button, ListItemText, Modal, Grid, Paper, Input } from '@material-ui/core';
+import { Button, ListItemText, Modal, Grid, Paper, Input, FormControlLabel, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 //firebase and its config file
@@ -56,12 +56,13 @@ export default function Task(props) {
 
     const updateTask = (event) => {
         event.preventDefault();
-
+        
         try {
-            db.collection('tasks').doc(props.task.id).set({
+            db.collection('tasks').doc(props.task.id).update({
                 task: input,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true })
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                isCompleted: false
+            })
         } catch(error) {
             alert(error);
         }
@@ -79,6 +80,17 @@ export default function Task(props) {
     const deleteTask = () => {
         try {
             db.collection('tasks').doc(props.task.id).delete();
+        } catch(error) {
+            alert(error);
+        }
+    }
+
+    const handleCheckboxChange = () => {
+        console.log(props.task)
+        try {
+            db.collection('tasks').doc(props.task.id).update({
+                isCompleted: !props.task.isCompleted
+            })
         } catch(error) {
             alert(error);
         }
@@ -103,6 +115,17 @@ export default function Task(props) {
             <Grid container wrap="nowrap" spacing={2}>
                 <Grid item>
                     <ListItemText primary={props.task.task} secondary={convertDate(props.task.timestamp)} />
+                    <FormControlLabel
+                    control={
+                    <Checkbox
+                        checked={props.task.isCompleted}
+                        onChange={handleCheckboxChange}
+                        name="checkedB"
+                        color="primary"
+                    />
+                    }
+                    label={props.task.isCompleted ? "done!" : "not done"}
+                />
                 </Grid>
                 <Grid item className={classes.icons}>
                     <EditIcon onClick={e => setOpen(true)} />

@@ -47,7 +47,10 @@ export default function App() {
 
     try {
       db.collection('tasks').orderBy('timestamp', 'desc').where("ownerId", "==", inputUser).onSnapshot(snapshot => {
-        setTasks(snapshot.docs.map(doc => ({id: doc.id, task: doc.data().task, timestamp: doc.data().timestamp})))
+        setTasks(snapshot.docs.map(doc => ({id: doc.id, 
+          task: doc.data().task, 
+          timestamp: doc.data().timestamp, 
+          isCompleted: doc.data().isCompleted})))
       });
     } catch (error) {
       alert(error);
@@ -63,7 +66,8 @@ export default function App() {
       db.collection('tasks').add({
         task: input,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(), //timestamp of the server
-        ownerId: inputUser
+        ownerId: inputUser,
+        isCompleted: false
       })
       setInput('');
       setHandleSnackbar(true);
