@@ -46,7 +46,7 @@ export default function App() {
     //.orderBy('timestamp', 'desc') index error
 
     try {
-      db.collection('tasks').where("ownerId", "==", inputUser).onSnapshot(snapshot => {
+      db.collection('tasks').orderBy('timestamp', 'desc').where("ownerId", "==", inputUser).onSnapshot(snapshot => {
         setTasks(snapshot.docs.map(doc => ({id: doc.id, task: doc.data().task, timestamp: doc.data().timestamp})))
       });
     } catch (error) {

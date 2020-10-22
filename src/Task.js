@@ -1,5 +1,5 @@
 import React, { useState }  from 'react'
-import { Button, ListItemText, Modal, Grid, Paper } from '@material-ui/core';
+import { Button, ListItemText, Modal, Grid, Paper, Input } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 //firebase and its config file
@@ -71,7 +71,7 @@ export default function Task(props) {
         <Modal open={open} onClose={e => setOpen(false)}>
             <div className={classes.paper}>
                 <h2>{props.task.task}</h2>
-                <input placeholder={props.task.task} value={input} onChange={e => setInput(e.target.value)}/>
+                <Input placeholder={props.task.task} value={input} onChange={event => setInput(event.target.value)} />
                 <Button onClick={updateTask}>Update Task</Button>
             </div>
         </Modal>
