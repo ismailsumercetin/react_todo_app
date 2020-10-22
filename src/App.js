@@ -50,7 +50,9 @@ export default function App() {
         setTasks(snapshot.docs.map(doc => ({id: doc.id, 
           task: doc.data().task, 
           timestamp: doc.data().timestamp, 
-          isCompleted: doc.data().isCompleted})))
+          isCompleted: doc.data().isCompleted,
+          taskColor: doc.data().taskColor
+        })))
       });
     } catch (error) {
       alert(error);
@@ -67,7 +69,8 @@ export default function App() {
         task: input,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(), //timestamp of the server
         ownerId: inputUser,
-        isCompleted: false
+        isCompleted: false,
+        taskColor: '#ffffff'
       })
       setInput('');
       setHandleSnackbar(true);
@@ -113,12 +116,12 @@ export default function App() {
       <form>
         <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">Users</InputLabel>
-        <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={inputUser}
-            onChange={event => setInputUser(event.target.value)}
-          >
+          <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={inputUser}
+              onChange={event => setInputUser(event.target.value)}
+            >
             {populateUsers()}
           </Select>
         </FormControl>
