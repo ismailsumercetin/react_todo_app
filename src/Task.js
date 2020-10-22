@@ -14,7 +14,7 @@ import EditIcon from '@material-ui/icons/Edit';
 const useStyles = makeStyles((theme) => ({
     paper: {
       position: 'absolute',
-      width: '50%',
+      width: '30%',
       left: '50%',
       transform: 'translate(-50%, 0)',
       top: '25%',
@@ -30,6 +30,22 @@ const useStyles = makeStyles((theme) => ({
     icons: {
         margin: '15px 0 0 35px',
         cursor: 'pointer'
+    },
+    updateButton: {
+        marginLeft: "15px"
+    },
+    headerContainer: {
+        marginBottom: "15px"
+    },
+    header_2: {
+        display: "inline"
+    },
+    header_5 : {
+        display: "inline",
+        fontWeight: "normal",
+        marginLeft: "12px",
+        color: "gray",
+        fontStyle: "italic"
     }
   }));
 
@@ -38,7 +54,9 @@ export default function Task(props) {
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
 
-    const updateTask = () => {
+    const updateTask = (event) => {
+        event.preventDefault();
+
         try {
             db.collection('tasks').doc(props.task.id).set({
                 task: input,
@@ -70,9 +88,14 @@ export default function Task(props) {
         <>
         <Modal open={open} onClose={e => setOpen(false)}>
             <div className={classes.paper}>
-                <h2>{props.task.task}</h2>
-                <Input placeholder={props.task.task} value={input} onChange={event => setInput(event.target.value)} />
-                <Button onClick={updateTask}>Update Task</Button>
+                <div className={classes.headerContainer}>
+                    <h2 className={classes.header_2}>{props.task.task}</h2>
+                    <h5 className={classes.header_5}>by {props.selectedUser}</h5>
+                </div>
+                <form>
+                    <Input placeholder={props.task.task} onChange={event => setInput(event.target.value)} />
+                    <Button type="submit" className={classes.updateButton} variant="contained" color="primary" disabled={!input.trim() || !input} onClick={updateTask}>Update Task</Button>
+                </form>
             </div>
         </Modal>
         <Grid item>

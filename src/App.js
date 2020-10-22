@@ -82,10 +82,15 @@ export default function App() {
     setHandleSnackbar(false);
   };
 
+  function getSelectedUsername() {
+      const name = document.querySelector("#demo-simple-select");
+      return name.textContent;
+  }
+
   const populateTasks = () => {
     return (
       tasks.map(task => (
-        <Task task={task}/>
+        <Task selectedUser={getSelectedUsername()} task={task}/>
       ))
     )
   } 
