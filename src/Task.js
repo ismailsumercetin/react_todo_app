@@ -1,4 +1,4 @@
-import React, { useState }  from 'react'
+import React, { useEffect, useState }  from 'react'
 import { Button, ListItemText, Modal, Grid, Paper, Input, FormControlLabel, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ColorPicker from 'material-ui-color-picker'
@@ -49,8 +49,7 @@ const useStyles = makeStyles((theme) => ({
         fontStyle: "italic"
     },
     colorPicker: {
-        marginLeft: "15px",
-        color: "black"
+        marginLeft: "15px"
     }
   }));
 
@@ -59,6 +58,17 @@ export default function Task(props) {
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
     const [inputColor, setInputColor] = useState('');
+
+    useEffect(() => {
+        try {
+            db.collection('tasks').doc(props.task.id).update({
+                taskColor: inputColor
+            })
+        } catch(error) {
+            alert(error);
+        }
+    
+      }, [inputColor]);
 
     const updateTask = (event) => {
         event.preventDefault();
@@ -74,16 +84,6 @@ export default function Task(props) {
         }
         
         setOpen(false);
-    }
-
-    const updateTaskColor = () => {
-        try {
-            db.collection('tasks').doc(props.task.id).update({
-                taskColor: inputColor
-            })
-        } catch(error) {
-            alert(error);
-        }
     }
 
     const convertDate = (timestamp) => {
@@ -115,7 +115,6 @@ export default function Task(props) {
     const handleTaskColor = (color) => {
         if(color){
             setInputColor(color);
-            updateTaskColor();
         }
             
     }
