@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   ListItemText,
@@ -12,13 +12,12 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import ColorPicker from "material-ui-color-picker";
 
-//firebase and its config file
-import db from "./firebase";
-import firebase from "firebase";
-
 //icons
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import EditIcon from "@material-ui/icons/Edit";
+
+//database util file
+import dbUtil from "./db_util";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -65,63 +64,11 @@ export default function Task(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [inputColor, setInputColor] = useState("");
-
-  useEffect(() => {
-    try {
-      db.collection("tasks").doc(props.task.id).update({
-        taskColor: inputColor,
-      });
-    } catch (error) {
-      alert(error);
-    }
-  }, [inputColor]);
-
-  const updateTask = (event) => {
-    event.preventDefault();
-
-    try {
-      db.collection("tasks").doc(props.task.id).update({
-        task: input,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        isCompleted: false,
-      });
-    } catch (error) {
-      alert(error);
-    }
-
-    setOpen(false);
-  };
 
   const convertDate = (timestamp) => {
     if (timestamp) {
       const date = new Date(timestamp.seconds * 1000).toLocaleString();
       return date;
-    }
-  };
-
-  const deleteTask = () => {
-    try {
-      db.collection("tasks").doc(props.task.id).delete();
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const handleCheckboxChange = () => {
-    console.log(props.task);
-    try {
-      db.collection("tasks").doc(props.task.id).update({
-        isCompleted: !props.task.isCompleted,
-      });
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const handleTaskColor = (color) => {
-    if (color) {
-      setInputColor(color);
     }
   };
 
@@ -144,7 +91,7 @@ export default function Task(props) {
               variant="contained"
               color="primary"
               disabled={!input.trim() || !input}
-              onClick={updateTask}
+              onClick={() => dbUtil.updateTask(props.task.id, input, setOpen)}
             >
               Update Task
             </Button>
@@ -166,7 +113,12 @@ export default function Task(props) {
                 control={
                   <Checkbox
                     checked={props.task.isCompleted}
-                    onChange={handleCheckboxChange}
+                    onChange={() =>
+                      dbUtil.handleTaskStatus(
+                        props.task.id,
+                        props.task.isCompleted
+                      )
+                    }
                     name="checkedB"
                     color="primary"
                   />
@@ -178,12 +130,16 @@ export default function Task(props) {
                 className={classes.colorPicker}
                 name="color"
                 defaultValue={props.task.taskColor}
-                onChange={handleTaskColor}
+                onChange={(color) =>
+                  color ? dbUtil.updateColor(color, props.task.id) : ""
+                }
               />
             </Grid>
             <Grid item className={classes.icons}>
               <EditIcon onClick={(e) => setOpen(true)} />
-              <DeleteForeverIcon onClick={deleteTask} />
+              <DeleteForeverIcon
+                onClick={() => dbUtil.deleteTask(props.task.id)}
+              />
             </Grid>
           </Grid>
         </Paper>

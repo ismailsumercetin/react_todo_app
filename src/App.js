@@ -11,9 +11,8 @@ import {
 } from "@material-ui/core";
 import Task from "./Task";
 
-//firebase and its config file
-import db from "./firebase";
-import firebase from "firebase";
+//database util file
+import dbUtil from "./db_util";
 
 //css
 import "./App.css";
@@ -36,61 +35,14 @@ export default function App() {
   const [handleSnackbar, setHandleSnackbar] = useState(false);
 
   useEffect(() => {
-    //useEffect remembers what's inside
-    //When there is a snapshot (when there's a change in db), fire this again
-    try {
-      db.collection("users").onSnapshot((snapshot) => {
-        setUsers(
-          snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name }))
-        );
-      });
-    } catch (error) {
-      alert(error);
-    }
+    //important -> passing state
+    dbUtil.getAllUsers(setUsers);
   }, []);
 
   useEffect(() => {
-    //useEffect remembers what's inside
-    //When there is a snapshot (when there's a change in db), fire this again
-    //.orderBy('timestamp', 'desc') index error
-
-    try {
-      db.collection("tasks")
-        .orderBy("timestamp", "desc")
-        .where("ownerId", "==", inputUser)
-        .onSnapshot((snapshot) => {
-          setTasks(
-            snapshot.docs.map((doc) => ({
-              id: doc.id,
-              task: doc.data().task,
-              timestamp: doc.data().timestamp,
-              isCompleted: doc.data().isCompleted,
-              taskColor: doc.data().taskColor,
-            }))
-          );
-        });
-    } catch (error) {
-      alert(error);
-    }
+    //important -> passing state
+    dbUtil.getTasksByUserId(setTasks, inputUser);
   }, [inputUser]);
-
-  const addTask = (event) => {
-    event.preventDefault();
-
-    try {
-      db.collection("tasks").add({
-        task: input,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(), //timestamp of the server
-        ownerId: inputUser,
-        isCompleted: false,
-        taskColor: "#ffffff",
-      });
-      setInput("");
-      setHandleSnackbar(true);
-    } catch (error) {
-      alert(error);
-    }
-  };
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -143,7 +95,9 @@ export default function App() {
           id="addTaskButton"
           disabled={!input.trim() || !inputUser}
           type="submit"
-          onClick={addTask}
+          onClick={() =>
+            dbUtil.addTask(input, inputUser, setInput, setHandleSnackbar)
+          }
           variant="contained"
           color="primary"
         >
