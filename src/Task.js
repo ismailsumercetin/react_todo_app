@@ -8,6 +8,7 @@ import {
   Input,
   FormControlLabel,
   Checkbox,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ColorPicker from "material-ui-color-picker";
@@ -106,7 +107,18 @@ export default function Task(props) {
           <Grid container wrap="nowrap" spacing={2}>
             <Grid item>
               <ListItemText
-                primary={props.task.task}
+                primary={
+                  <Typography
+                    type="body2"
+                    style={{
+                      textDecoration: props.task.isCompleted
+                        ? "line-through"
+                        : "none",
+                    }}
+                  >
+                    {props.task.task}
+                  </Typography>
+                }
                 secondary={convertDate(props.task.timestamp)}
               />
               <FormControlLabel
