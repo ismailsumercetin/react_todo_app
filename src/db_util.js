@@ -55,7 +55,10 @@ const addTask = (input, inputUser, setInput, setHandleSnackbar) => {
     });
 
     setInput("");
-    setHandleSnackbar(true);
+    setHandleSnackbar({
+      messageText: "Task has been added successfully!",
+      isActive: true,
+    });
   } catch (error) {
     alert(error);
   }

@@ -32,7 +32,10 @@ export default function App() {
   const [users, setUsers] = useState([]);
   const [input, setInput] = useState("");
   const [inputUser, setInputUser] = useState("");
-  const [handleSnackbar, setHandleSnackbar] = useState(false);
+  const [handleSnackbar, setHandleSnackbar] = useState({
+    messageText: "",
+    isActive: false,
+  });
 
   useEffect(() => {
     //important -> passing state
@@ -49,7 +52,7 @@ export default function App() {
       return;
     }
 
-    setHandleSnackbar(false);
+    setHandleSnackbar({ messageText: "", isActive: false });
   };
 
   function getSelectedUsername() {
@@ -114,7 +117,7 @@ export default function App() {
         {populateTasks()}
       </Grid>
       <SnackbarComponent
-        isActivated={handleSnackbar}
+        snackbarProp={handleSnackbar}
         handleClose={handleSnackbarClose}
       />
     </div>
