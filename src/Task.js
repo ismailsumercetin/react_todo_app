@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Task(props) {
+export default function Task({ task, selectedUser, handleSnackbarDelete }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -78,12 +78,12 @@ export default function Task(props) {
       <Modal open={open} onClose={(e) => setOpen(false)}>
         <div className={classes.paper}>
           <div className={classes.headerContainer}>
-            <h2 className={classes.header_2}>{props.task.task}</h2>
-            <h5 className={classes.header_5}>by {props.selectedUser}</h5>
+            <h2 className={classes.header_2}>{task.task}</h2>
+            <h5 className={classes.header_5}>by {selectedUser}</h5>
           </div>
           <form>
             <Input
-              placeholder={props.task.task}
+              placeholder={task.task}
               onChange={(event) => setInput(event.target.value)}
             />
             <Button
@@ -92,7 +92,7 @@ export default function Task(props) {
               variant="contained"
               color="primary"
               disabled={!input.trim() || !input}
-              onClick={() => dbUtil.updateTask(props.task.id, input, setOpen)}
+              onClick={() => dbUtil.updateTask(task.id, input, setOpen)}
             >
               Update Task
             </Button>
@@ -102,7 +102,7 @@ export default function Task(props) {
       <Grid item>
         <Paper
           className={classes.gridPaper}
-          style={{ backgroundColor: props.task.taskColor }}
+          style={{ backgroundColor: task.taskColor }}
         >
           <Grid container wrap="nowrap" spacing={2}>
             <Grid item>
@@ -111,48 +111,43 @@ export default function Task(props) {
                   <Typography
                     type="body2"
                     style={{
-                      textDecoration: props.task.isCompleted
+                      textDecoration: task.isCompleted
                         ? "line-through"
                         : "none",
                     }}
                   >
-                    {props.task.task}
+                    {task.task}
                   </Typography>
                 }
-                secondary={convertDate(props.task.timestamp)}
+                secondary={convertDate(task.timestamp)}
               />
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={props.task.isCompleted}
+                    checked={task.isCompleted}
                     onChange={() =>
-                      dbUtil.handleTaskStatus(
-                        props.task.id,
-                        props.task.isCompleted
-                      )
+                      dbUtil.handleTaskStatus(task.id, task.isCompleted)
                     }
                     name="checkedB"
                     color="primary"
                   />
                 }
-                label={props.task.isCompleted ? "Done!" : "Not Done"}
+                label={task.isCompleted ? "Done!" : "Not Done"}
               />
               Task Color:
               <ColorPicker
                 className={classes.colorPicker}
                 name="color"
-                defaultValue={props.task.taskColor}
+                defaultValue={task.taskColor}
                 onChange={(color) =>
-                  color ? dbUtil.updateColor(color, props.task.id) : ""
+                  color ? dbUtil.updateColor(color, task.id) : ""
                 }
               />
             </Grid>
             <Grid item className={classes.icons}>
               <EditIcon onClick={(e) => setOpen(true)} />
               <DeleteForeverIcon
-                onClick={() =>
-                  dbUtil.deleteTask(props.task.id, props.handleSnackbarDelete)
-                }
+                onClick={() => dbUtil.deleteTask(task.id, handleSnackbarDelete)}
               />
             </Grid>
           </Grid>

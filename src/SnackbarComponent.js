@@ -6,7 +6,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function SnackbarComponent(props) {
+export default function SnackbarComponent({ snackbarProp, handleClose }) {
   const anchorOrigin = {
     vertical: "bottom",
     horizontal: "right",
@@ -15,13 +15,13 @@ export default function SnackbarComponent(props) {
   return (
     <div>
       <Snackbar
-        open={props.snackbarProp.isActive}
+        open={snackbarProp.isActive}
         autoHideDuration={3000}
-        onClose={props.handleClose}
+        onClose={handleClose}
         anchorOrigin={anchorOrigin}
       >
-        <Alert onClose={props.handleClose} severity="success">
-          {props.snackbarProp.messageText}
+        <Alert onClose={handleClose} severity="success">
+          {snackbarProp.messageText}
         </Alert>
       </Snackbar>
     </div>
