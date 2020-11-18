@@ -150,7 +150,9 @@ export default function Task(props) {
             <Grid item className={classes.icons}>
               <EditIcon onClick={(e) => setOpen(true)} />
               <DeleteForeverIcon
-                onClick={() => dbUtil.deleteTask(props.task.id)}
+                onClick={() =>
+                  dbUtil.deleteTask(props.task.id, props.handleSnackbarDelete)
+                }
               />
             </Grid>
           </Grid>

@@ -74,9 +74,10 @@ const updateColor = (color, taskId) => {
   }
 };
 
-const deleteTask = (taskId) => {
+const deleteTask = (taskId, setHandleSnackbar) => {
   try {
     db.collection(COLLECTION_NAMES.TASKS).doc(taskId).delete();
+    setHandleSnackbar();
   } catch (error) {
     alert(error);
   }

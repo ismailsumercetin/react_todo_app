@@ -60,9 +60,20 @@ export default function App() {
     return name.textContent;
   }
 
+  const handleSnackbarDelete = () => {
+    setHandleSnackbar({
+      messageText: "Task has been deleted successfully!",
+      isActive: true,
+    });
+  };
+
   const populateTasks = () => {
     return tasks.map((task) => (
-      <Task selectedUser={getSelectedUsername()} task={task} />
+      <Task
+        handleSnackbarDelete={handleSnackbarDelete}
+        selectedUser={getSelectedUsername()}
+        task={task}
+      />
     ));
   };
 
