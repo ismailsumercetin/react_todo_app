@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import {
-  Button,
   ListItemText,
-  Modal,
   Grid,
   Paper,
-  Input,
   FormControlLabel,
   Checkbox,
   Typography,
@@ -20,17 +17,21 @@ import EditIcon from "@material-ui/icons/Edit";
 //database util file
 import dbUtil from "./db_util";
 
+//modal
+import DeleteWarningModal from "./modal/DeleteWarningModal";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
-    width: "30%",
+    width: "25%",
     left: "50%",
     transform: "translate(-50%, 0)",
     top: "25%",
     backgroundColor: theme.palette.background.paper,
-    border: "1px solid black",
+    outline: "none",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    borderRadius: "10px",
   },
   gridPaper: {
     padding: theme.spacing(2),
@@ -40,24 +41,24 @@ const useStyles = makeStyles((theme) => ({
     margin: "15px 0 0 35px",
     cursor: "pointer",
   },
-  updateButton: {
-    marginLeft: "15px",
+  deleteButton: {
+    marginRight: "15px",
   },
   headerContainer: {
     marginBottom: "15px",
   },
-  header_2: {
-    display: "inline",
-  },
-  header_5: {
-    display: "inline",
-    fontWeight: "normal",
-    marginLeft: "12px",
-    color: "gray",
-    fontStyle: "italic",
-  },
   colorPicker: {
     marginLeft: "15px",
+  },
+  form: {
+    textAlign: "center",
+    marginTop: "15px",
+  },
+  warningIcon: {
+    textAlign: "center",
+  },
+  warningImage: {
+    textAlign: "center",
   },
 }));
 
@@ -73,32 +74,19 @@ export default function Task({ task, selectedUser, handleSnackbarDelete }) {
     }
   };
 
+  const handleModalClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
-      <Modal open={open} onClose={(e) => setOpen(false)}>
-        <div className={classes.paper}>
-          <div className={classes.headerContainer}>
-            <h2 className={classes.header_2}>{task.task}</h2>
-            <h5 className={classes.header_5}>by {selectedUser}</h5>
-          </div>
-          <form>
-            <Input
-              placeholder={task.task}
-              onChange={(event) => setInput(event.target.value)}
-            />
-            <Button
-              type="submit"
-              className={classes.updateButton}
-              variant="contained"
-              color="primary"
-              disabled={!input.trim() || !input}
-              onClick={() => dbUtil.updateTask(task.id, input, setOpen)}
-            >
-              Update Task
-            </Button>
-          </form>
-        </div>
-      </Modal>
+      <DeleteWarningModal
+        useStyles={useStyles}
+        open={open}
+        handleModalClose={handleModalClose}
+        handleSnackbarDelete={handleSnackbarDelete}
+        taskId={task.id}
+      />
       <Grid item>
         <Paper
           className={classes.gridPaper}
@@ -145,10 +133,8 @@ export default function Task({ task, selectedUser, handleSnackbarDelete }) {
               />
             </Grid>
             <Grid item className={classes.icons}>
-              <EditIcon onClick={(e) => setOpen(true)} />
-              <DeleteForeverIcon
-                onClick={() => dbUtil.deleteTask(task.id, handleSnackbarDelete)}
-              />
+              <EditIcon /*onClick={(e) => setOpen(true)}*/ />
+              <DeleteForeverIcon onClick={() => setOpen(true)} />
             </Grid>
           </Grid>
         </Paper>
