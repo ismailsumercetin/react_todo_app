@@ -58,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
   warningImage: {
     textAlign: "center",
   },
+  taskDiv: {
+    width: "400px",
+    maxWidth: "400px",
+  },
 }));
 
 export default function Task({ task, handleSnackbarDelete }) {
@@ -87,10 +91,12 @@ export default function Task({ task, handleSnackbarDelete }) {
   const listItemTextPrimary = () => {
     return (
       <div
+        className={classes.taskDiv}
         style={{
           textDecoration: task.isCompleted ? "line-through" : "none",
         }}
         contentEditable={!task.isCompleted}
+        data-gramm_editor="false"
         onBlur={(e) => updateTask(e)}
       >
         {task.task}
