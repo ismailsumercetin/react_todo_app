@@ -5,14 +5,12 @@ import {
   Paper,
   FormControlLabel,
   Checkbox,
-  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ColorPicker from "material-ui-color-picker";
 
 //icons
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import EditIcon from "@material-ui/icons/Edit";
 
 //database util file
 import dbUtil from "./db_util";
@@ -62,10 +60,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Task({ task, selectedUser, handleSnackbarDelete }) {
+export default function Task({ task, handleSnackbarDelete }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
 
   const convertDate = (timestamp) => {
     if (timestamp) {
@@ -76,6 +73,29 @@ export default function Task({ task, selectedUser, handleSnackbarDelete }) {
 
   const handleModalClose = () => {
     setOpen(false);
+  };
+
+  const updateTask = (e) => {
+    const updatedTask = e.target.textContent;
+
+    if (updatedTask !== task.task) {
+      dbUtil.updateTask(task.id, updatedTask);
+    }
+  };
+
+  //onBlur fires immediately when it is in render, and clicking on checkbox?
+  const listItemTextPrimary = () => {
+    return (
+      <div
+        style={{
+          textDecoration: task.isCompleted ? "line-through" : "none",
+        }}
+        contentEditable={!task.isCompleted}
+        onBlur={(e) => updateTask(e)}
+      >
+        {task.task}
+      </div>
+    );
   };
 
   return (
@@ -95,18 +115,7 @@ export default function Task({ task, selectedUser, handleSnackbarDelete }) {
           <Grid container wrap="nowrap" spacing={2}>
             <Grid item>
               <ListItemText
-                primary={
-                  <Typography
-                    type="body2"
-                    style={{
-                      textDecoration: task.isCompleted
-                        ? "line-through"
-                        : "none",
-                    }}
-                  >
-                    {task.task}
-                  </Typography>
-                }
+                primary={listItemTextPrimary()}
                 secondary={convertDate(task.timestamp)}
               />
               <FormControlLabel
@@ -133,7 +142,6 @@ export default function Task({ task, selectedUser, handleSnackbarDelete }) {
               />
             </Grid>
             <Grid item className={classes.icons}>
-              <EditIcon /*onClick={(e) => setOpen(true)}*/ />
               <DeleteForeverIcon onClick={() => setOpen(true)} />
             </Grid>
           </Grid>

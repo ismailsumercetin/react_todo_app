@@ -84,7 +84,7 @@ const deleteTask = (taskId, setHandleSnackbar, handleModalClose) => {
   }
 };
 
-const updateTask = (taskId, input, setOpen) => {
+const updateTask = (taskId, input) => {
   try {
     db.collection(COLLECTION_NAMES.TASKS).doc(taskId).update({
       task: input,
@@ -94,8 +94,6 @@ const updateTask = (taskId, input, setOpen) => {
   } catch (error) {
     alert(error);
   }
-
-  setOpen(false);
 };
 
 const handleTaskStatus = (taskId, isCompletedCurrent) => {
