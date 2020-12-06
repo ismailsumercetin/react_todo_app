@@ -10,6 +10,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import Task from "./Task";
+import { logoutUser } from "./authentication";
 
 //database util file
 import dbUtil from "./db_util";
@@ -26,7 +27,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function App() {
+export default function App({ handleIsSignedOut }) {
   const classes = useStyles();
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
@@ -70,6 +71,7 @@ export default function App() {
   const populateTasks = () => {
     const allTasks = tasks.map((task) => (
       <Task
+        key={task.id}
         handleSnackbarDelete={handleSnackbarDelete}
         selectedUser={getSelectedUsername()}
         task={task}
@@ -80,13 +82,16 @@ export default function App() {
 
   const populateUsers = () => {
     const allUsers = users.map((user) => (
-      <MenuItem value={user.id}>{user.name}</MenuItem>
+      <MenuItem key={user.id} value={user.id}>
+        {user.name}
+      </MenuItem>
     ));
     return allUsers;
   };
 
   return (
     <div className="App">
+      <button onClick={() => logoutUser(handleIsSignedOut)}>Sign Out</button>
       <h1>Todo app</h1>
       <form>
         <FormControl className={classes.formControl}>
