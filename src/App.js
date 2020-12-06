@@ -68,19 +68,21 @@ export default function App() {
   };
 
   const populateTasks = () => {
-    return tasks.map((task) => (
+    const allTasks = tasks.map((task) => (
       <Task
         handleSnackbarDelete={handleSnackbarDelete}
         selectedUser={getSelectedUsername()}
         task={task}
       />
     ));
+    return allTasks;
   };
 
   const populateUsers = () => {
-    return users.map((user) => (
+    const allUsers = users.map((user) => (
       <MenuItem value={user.id}>{user.name}</MenuItem>
     ));
+    return allUsers;
   };
 
   return (
