@@ -56,11 +56,6 @@ export default function App({ handleIsSignedOut }) {
     setHandleSnackbar({ messageText: "", isActive: false });
   };
 
-  function getSelectedUsername() {
-    const name = document.querySelector("#demo-simple-select");
-    return name.textContent;
-  }
-
   const handleSnackbarDelete = () => {
     setHandleSnackbar({
       messageText: "Task has been deleted successfully!",
@@ -73,7 +68,6 @@ export default function App({ handleIsSignedOut }) {
       <Task
         key={task.id}
         handleSnackbarDelete={handleSnackbarDelete}
-        selectedUser={getSelectedUsername()}
         task={task}
       />
     ));
