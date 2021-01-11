@@ -1,137 +1,61 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  Input,
-  Grid,
-  Select,
-  MenuItem,
-  makeStyles,
-} from "@material-ui/core";
+
+//components
 import Task from "./Task";
-import { logoutUser } from "./authentication";
 
-//database util file
+//db-auth util
 import dbUtil from "./db_util";
+import { logoutUser, getCurrentUser } from "./auth_util";
 
-//css
-import "./App.css";
+//style
+import {
+  AppWrapper,
+  TaskInput,
+  AddTaskButton,
+  TaskWrapper,
+} from "./style/styleApp";
 
-import SnackbarComponent from "./SnackbarComponent";
-
-const useStyles = makeStyles(() => ({
-  formControl: {
-    minWidth: 120,
-    marginRight: "12px",
-  },
-}));
-
-export default function App({ handleIsSignedOut }) {
-  const classes = useStyles();
+const App = ({ handleIsSignedOut }) => {
   const [tasks, setTasks] = useState([]);
-  const [users, setUsers] = useState([]);
   const [input, setInput] = useState("");
-  const [inputUser, setInputUser] = useState("");
-  const [handleSnackbar, setHandleSnackbar] = useState({
-    messageText: "",
-    isActive: false,
-  });
 
   useEffect(() => {
     //important -> passing state
-    dbUtil.getAllUsers(setUsers);
+    dbUtil.getCurrentUserTasks(setTasks);
   }, []);
 
-  useEffect(() => {
-    //important -> passing state
-    dbUtil.getTasksByUserId(setTasks, inputUser);
-  }, [inputUser]);
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setHandleSnackbar({ messageText: "", isActive: false });
-  };
-
-  const handleSnackbarDelete = () => {
-    setHandleSnackbar({
-      messageText: "Task has been deleted successfully!",
-      isActive: true,
-    });
-  };
-
   const populateTasks = () => {
-    const allTasks = tasks.map((task) => (
-      <Task
-        key={task.id}
-        handleSnackbarDelete={handleSnackbarDelete}
-        task={task}
-      />
-    ));
+    const allTasks = tasks.map((task) => <Task key={task.id} task={task} />);
     return allTasks;
   };
 
-  const populateUsers = () => {
-    const allUsers = users.map((user) => (
-      <MenuItem key={user.id} value={user.id}>
-        {user.name}
-      </MenuItem>
-    ));
-    return allUsers;
-  };
-
   return (
-    <div className="App">
-      <button onClick={() => logoutUser(handleIsSignedOut)}>Sign Out</button>
-      <h1>Todo app</h1>
-      <form>
-        <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Users</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={inputUser}
-            onChange={(event) => setInputUser(event.target.value)}
-          >
-            {populateUsers()}
-          </Select>
-        </FormControl>
-        <FormControl>
-          <InputLabel>Write a Todo</InputLabel>
-          <Input
+    <div>
+      <AppWrapper>
+        <button type="submit" onClick={() => logoutUser(handleIsSignedOut)}>
+          Sign Out
+        </button>
+        <h1>Todo app</h1>
+        <form>
+          <TaskInput
             value={input}
             onChange={(event) => setInput(event.target.value)}
           />
-        </FormControl>
-        <Button
-          id="addTaskButton"
-          disabled={!input.trim() || !inputUser}
-          type="submit"
-          onClick={() =>
-            dbUtil.addTask(input, inputUser, setInput, setHandleSnackbar)
-          }
-          variant="contained"
-          color="primary"
-        >
-          Add Task
-        </Button>
-      </form>
-      <Grid
-        id="appGrid"
-        container
-        direction="column"
-        alignItems="center"
-        spacing={3}
-      >
-        {populateTasks()}
-      </Grid>
-      <SnackbarComponent
-        snackbarProp={handleSnackbar}
-        handleClose={handleSnackbarClose}
-      />
+          <AddTaskButton
+            id="addTaskButton"
+            disabled={!input.trim()}
+            type="submit"
+            onClick={() =>
+              dbUtil.addTask(input, getCurrentUser().uid, setInput)
+            }
+          >
+            Add Task
+          </AddTaskButton>
+        </form>
+      </AppWrapper>
+      <TaskWrapper>{populateTasks()}</TaskWrapper>
     </div>
   );
-}
+};
+
+export default App;
