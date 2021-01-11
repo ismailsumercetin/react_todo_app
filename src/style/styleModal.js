@@ -9,8 +9,7 @@ const ModalWrapper = styled.div`
   width: 80%;
   max-width: 500px;
   margin: 4rem auto;
-  display: ${(props) => (props.show ? "block" : "none")};
-  transform: ${(props) => (props.show ? "translate(0vh)" : null)};
+  transform: translate(0vh);
 `;
 
 const ModalCloseButtonTop = styled.span`
@@ -63,6 +62,26 @@ const ModalFormSigninButton = styled.button`
   font-weight: 500;
 `;
 
+const ModalPasswordMatchIcon = styled.span`
+  display: ${(props) => (props.password ? "inline" : "none")};
+  content: ${(props) => (props.isMatch ? "tick" : "X")};
+  background: ${(props) => (props.isMatch ? "#01bd6f" : "red")};
+  border-radius: 3px;
+  padding: 1px 2px 1px 2px;
+  color: white;
+`;
+
+const VisibilityIconWrapper = styled.div`
+  text-align: right;
+`;
+
+const ValidationWarningText = styled.div`
+  border-radius: 4px;
+  background: red;
+  color: white;
+  text-align: center;
+`;
+
 export {
   ModalWrapper,
   ModalCloseButtonTop,
@@ -72,4 +91,7 @@ export {
   ModalBackground,
   ModalFormItemWrapper,
   ModalFormSigninButton,
+  ModalPasswordMatchIcon,
+  VisibilityIconWrapper,
+  ValidationWarningText,
 };

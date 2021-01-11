@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { loginUser } from "../authentication";
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { loginUser } from "../auth_util";
 import {
   ModalWrapper,
   ModalCloseButtonTop,
@@ -10,17 +11,27 @@ import {
   ModalFormSigninButton,
 } from "../style/styleModal";
 
-export default function LoginModal({ show, close, handleIsSignedIn }) {
+const modalRoot = document.querySelector("#modal-root");
+const el = document.createElement("div");
+
+export default function LoginModal({ close, handleIsSignedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    modalRoot.appendChild(el);
+    return () => {
+      modalRoot.removeChild(el);
+    };
+  }, [el]);
 
   const handleLogin = (e, email, password) => {
     e.preventDefault();
     loginUser(email, password, handleIsSignedIn, close);
   };
 
-  return (
-    <ModalWrapper show={show}>
+  const loginModal = (
+    <ModalWrapper>
       <ModalContent>
         <ModalCloseButtonTop onClick={close}>x</ModalCloseButtonTop>
         <ModalBody>
@@ -33,6 +44,7 @@ export default function LoginModal({ show, close, handleIsSignedIn }) {
                 name="email"
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="off"
               />
             </ModalFormItemWrapper>
             <ModalFormItemWrapper>
@@ -42,6 +54,7 @@ export default function LoginModal({ show, close, handleIsSignedIn }) {
                 name="password"
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="off"
               />
             </ModalFormItemWrapper>
             <ModalFormItemWrapper>
@@ -57,4 +70,6 @@ export default function LoginModal({ show, close, handleIsSignedIn }) {
       </ModalContent>
     </ModalWrapper>
   );
+
+  return ReactDOM.createPortal(loginModal, el);
 }

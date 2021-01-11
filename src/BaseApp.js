@@ -1,14 +1,26 @@
 import React, { useState } from "react";
+
+//modals
 import LoginModal from "./modal/LoginModal";
-import { ModalBackground } from "./style/styleModal";
+import SignUpModal from "./modal/SignUpModal";
+
+//component
 import App from "./App";
+
+//style
+import { ModalBackground } from "./style/styleModal";
+
+//auth
+import { getCurrentUser } from "./auth_util";
 
 const BaseApp = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const closeModalHandler = () => {
     setShowModal(false);
+    setShowRegisterModal(false);
   };
 
   const handleIsSignedIn = () => {
@@ -20,17 +32,26 @@ const BaseApp = () => {
   };
 
   const handleAuthRender = () => {
-    if (!isSignedIn) {
+    if (!getCurrentUser()) {
       return (
         <div>
-          {showModal ? <ModalBackground onClick={closeModalHandler} /> : null}
+          {showModal || showRegisterModal ? (
+            <ModalBackground onClick={closeModalHandler} />
+          ) : null}
+          {showModal ? (
+            <LoginModal
+              close={closeModalHandler}
+              handleIsSignedIn={handleIsSignedIn}
+            />
+          ) : null}
+          {showRegisterModal ? (
+            <SignUpModal
+              close={closeModalHandler}
+              handleIsSignedIn={handleIsSignedIn}
+            />
+          ) : null}
           <button onClick={() => setShowModal(true)}>Sign In</button>
-          <button>Sign Up</button>
-          <LoginModal
-            show={showModal}
-            close={closeModalHandler}
-            handleIsSignedIn={handleIsSignedIn}
-          />
+          <button onClick={() => setShowRegisterModal(true)}>Sign Up</button>
         </div>
       );
     }
