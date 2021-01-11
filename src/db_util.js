@@ -1,5 +1,6 @@
 import { db } from "./firebase";
 import firebase from "firebase";
+import { getCurrentUser } from "./auth_util";
 
 const COLLECTION_NAMES = {
   TASKS: "tasks",
@@ -11,54 +12,74 @@ const COLLECTION_PROPS = {
   OWNER_ID: "ownerId",
 };
 
-const getAllUsers = (setUsers) => {
+const getCurrentUserTasks = (setTasks) => {
   try {
-    db.collection(COLLECTION_NAMES.USERS).onSnapshot((snapshot) => {
-      setUsers(
-        snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name }))
-      );
-    });
-  } catch (error) {
-    alert(error);
-  }
-};
-
-const getTasksByUserId = (setTasks, inputUser) => {
-  try {
+    const { uid } = getCurrentUser();
     db.collection(COLLECTION_NAMES.TASKS)
       .orderBy(COLLECTION_PROPS.TIMESTAMP, "desc")
-      .where(COLLECTION_PROPS.OWNER_ID, "==", inputUser)
+      .where(COLLECTION_PROPS.OWNER_ID, "==", uid)
       .onSnapshot((snapshot) => {
-        setTasks(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            task: doc.data().task,
-            timestamp: doc.data().timestamp,
-            isCompleted: doc.data().isCompleted,
-            taskColor: doc.data().taskColor,
-          }))
-        );
+        const task = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          task: doc.data().task,
+          timestamp: doc.data().timestamp,
+          isCompleted: doc.data().isCompleted,
+          taskColor: doc.data().taskColor,
+        }));
+        setTasks(task);
       });
   } catch (error) {
     alert(error);
   }
 };
 
-const addTask = (input, inputUser, setInput, setHandleSnackbar) => {
+// const getAllUsers = (setUsers) => {
+//   try {
+//     db.collection(COLLECTION_NAMES.USERS).onSnapshot((snapshot) => {
+//       const user = snapshot.docs.map((doc) => ({
+//         id: doc.id,
+//         name: doc.data().name,
+//       }));
+//       setUsers(user);
+//     });
+//   } catch (error) {
+//     alert(error);
+//   }
+// };
+
+// const getTasksByUserId = (setTasks, inputUser) => {
+//   try {
+//     db.collection(COLLECTION_NAMES.TASKS)
+//       .orderBy(COLLECTION_PROPS.TIMESTAMP, "desc")
+//       .where(COLLECTION_PROPS.OWNER_ID, "==", inputUser)
+//       .onSnapshot((snapshot) => {
+//         const task = snapshot.docs.map((doc) => ({
+//           id: doc.id,
+//           task: doc.data().task,
+//           timestamp: doc.data().timestamp,
+//           isCompleted: doc.data().isCompleted,
+//           taskColor: doc.data().taskColor,
+//         }));
+//         setTasks(task);
+//       });
+//   } catch (error) {
+//     alert(error);
+//   }
+// };
+
+const addTask = (input, inputUser, setInput) => {
   try {
-    db.collection(COLLECTION_NAMES.TASKS).add({
+    const task = {
       task: input,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(), //timestamp of the server
       ownerId: inputUser,
       isCompleted: false,
       taskColor: "#ffffff",
-    });
+    };
+
+    db.collection(COLLECTION_NAMES.TASKS).add(task);
 
     setInput("");
-    setHandleSnackbar({
-      messageText: "Task has been added successfully!",
-      isActive: true,
-    });
   } catch (error) {
     alert(error);
   }
@@ -74,11 +95,9 @@ const updateColor = (color, taskId) => {
   }
 };
 
-const deleteTask = (taskId, setHandleSnackbar, handleModalClose) => {
+const deleteTask = (taskId) => {
   try {
     db.collection(COLLECTION_NAMES.TASKS).doc(taskId).delete();
-    setHandleSnackbar();
-    handleModalClose();
   } catch (error) {
     alert(error);
   }
@@ -106,12 +125,25 @@ const handleTaskStatus = (taskId, isCompletedCurrent) => {
   }
 };
 
+const createUser = (uid, email, username) => {
+  try {
+    db.collection(COLLECTION_NAMES.USERS).doc(uid).set({
+      email: email,
+      name: username,
+    });
+  } catch (error) {
+    alert(error);
+  }
+};
+
 export default {
-  getAllUsers,
-  getTasksByUserId,
+  // getAllUsers,
+  // getTasksByUserId,
+  getCurrentUserTasks,
   addTask,
   updateColor,
   deleteTask,
   updateTask,
   handleTaskStatus,
+  createUser,
 };
