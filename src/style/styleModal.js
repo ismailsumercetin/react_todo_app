@@ -81,6 +81,7 @@ const ValidationWarningText = styled.div`
   background: red;
   color: white;
   text-align: center;
+  padding: 10px;
 `;
 
 export {
