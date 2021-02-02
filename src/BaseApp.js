@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //modals
 import LoginModal from "./modal/LoginModal";
@@ -8,7 +8,7 @@ import SignUpModal from "./modal/SignUpModal";
 import App from "./App";
 
 //style
-import { ModalBackground } from "./style/styleModal";
+import { ModalBackground, ModalFormSigninButton } from "./style/styleModal";
 
 //auth
 import { getCurrentUser } from "./auth_util";
@@ -17,6 +17,14 @@ const BaseApp = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (getCurrentUser()) {
+        handleIsSignedIn();
+      }
+    }, 1000);
+  }, []);
 
   const closeModalHandler = () => {
     setShowModal(false);
@@ -38,20 +46,27 @@ const BaseApp = () => {
           {showModal || showRegisterModal ? (
             <ModalBackground onClick={closeModalHandler} />
           ) : null}
-          {showModal ? (
-            <LoginModal
-              close={closeModalHandler}
-              handleIsSignedIn={handleIsSignedIn}
-            />
-          ) : null}
-          {showRegisterModal ? (
-            <SignUpModal
-              close={closeModalHandler}
-              handleIsSignedIn={handleIsSignedIn}
-            />
-          ) : null}
-          <button onClick={() => setShowModal(true)}>Sign In</button>
-          <button onClick={() => setShowRegisterModal(true)}>Sign Up</button>
+          <div>
+            {showModal ? (
+              <LoginModal
+                close={closeModalHandler}
+                handleIsSignedIn={handleIsSignedIn}
+              />
+            ) : null}
+            {showRegisterModal ? (
+              <SignUpModal
+                close={closeModalHandler}
+                handleIsSignedIn={handleIsSignedIn}
+              />
+            ) : null}
+
+            <ModalFormSigninButton onClick={() => setShowModal(true)}>
+              Login
+            </ModalFormSigninButton>
+            <ModalFormSigninButton onClick={() => setShowRegisterModal(true)}>
+              Sign Up
+            </ModalFormSigninButton>
+          </div>
         </div>
       );
     }
@@ -60,4 +75,5 @@ const BaseApp = () => {
 
   return <div>{handleAuthRender()}</div>;
 };
+
 export default BaseApp;
