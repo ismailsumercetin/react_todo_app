@@ -1,7 +1,7 @@
 import { auth } from "./firebase";
 import dbUtil from "./db_util";
 
-const signupUser = (username, email, password, handleIsSignedIn) => {
+const signupUser = (username, email, password, handleIsSignedIn, setValidationError) => {
   auth
     .createUserWithEmailAndPassword(email, password)
     .then((user) => {
@@ -9,7 +9,7 @@ const signupUser = (username, email, password, handleIsSignedIn) => {
       handleIsSignedIn();
     })
     .catch((error) => {
-      console.log(error);
+      setValidationError(error.message);
     });
 };
 

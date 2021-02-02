@@ -54,7 +54,7 @@ export default function SignUpModal({ close, handleIsSignedIn }) {
     }
     setValidationError("");
 
-    signupUser(userName, email, password, handleIsSignedIn);
+    signupUser(userName, email, password, handleIsSignedIn, setValidationError);
   };
 
   const handleVisibility = () => {
