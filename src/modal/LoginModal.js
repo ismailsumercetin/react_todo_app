@@ -35,6 +35,15 @@ export default function LoginModal({ close, handleIsSignedIn }) {
 
   const handleLogin = (e, email, password) => {
     e.preventDefault();
+
+    if (
+      !email.trim() ||
+      password.length === 0
+    ) {
+      setValidationError("Please Fill All Fields");
+      return null;
+    }
+
     loginUser(email, password, handleIsSignedIn, close, setValidationError);
   };
 
