@@ -7,6 +7,16 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 //database util file
 import dbUtil from "./db_util";
 
+//style
+import {
+  CheckboxInput,
+  TaskWrapper,
+  ColorPickerWrapper,
+  SubWrapper,
+  TimeStampText,
+  TaskText,
+} from "./style/styleTask";
+
 export default function Task({ task }) {
   const convertDate = (timestamp) => {
     if (timestamp) {
@@ -18,49 +28,46 @@ export default function Task({ task }) {
   const updateTask = (e) => {
     const updatedTask = e.target.textContent;
 
-    if (updatedTask !== task.task) {
+    if (updatedTask !== task.task && updatedTask) {
       dbUtil.updateTask(task.id, updatedTask);
     }
   };
 
   const listItemTextPrimary = () => {
     return (
-      <div
-        style={{
-          textDecoration: task.isCompleted ? "line-through" : "none",
-        }}
-        contentEditable={!task.isCompleted}
+      <TaskText
+        isCompleted={task.isCompleted}
         data-gramm_editor="false"
         suppressContentEditableWarning={true}
         onBlur={(e) => updateTask(e)}
       >
         {task.task}
-      </div>
+      </TaskText>
     );
   };
 
   return (
-    <div style={{ backgroundColor: task.taskColor }}>
-      <div>{listItemTextPrimary()}</div>
-      <div>{convertDate(task.timestamp)}</div>
-      <div>
-        <input
-          type="checkbox"
-          checked={task.isCompleted}
+    <TaskWrapper>
+      <SubWrapper>
+        <CheckboxInput
+          isCompleted={task.isCompleted}
           onChange={() => dbUtil.handleTaskStatus(task.id, task.isCompleted)}
         />
-        Task Color:
-        <ColorPicker
-          name="color"
-          defaultValue={task.taskColor}
-          onChange={(color) =>
-            color ? dbUtil.updateColor(color, task.id) : ""
-          }
-        />
-      </div>
-      <div>
-        <DeleteForeverIcon />
-      </div>
-    </div>
+        {listItemTextPrimary()}
+        <TimeStampText>{convertDate(task.timestamp)}</TimeStampText>
+      </SubWrapper>
+      <SubWrapper>
+        <ColorPickerWrapper taskColor={task.taskColor}>
+          <ColorPicker
+            name="color"
+            defaultValue={task.taskColor}
+            onChange={(color) =>
+              color ? dbUtil.updateColor(color, task.id) : ""
+            }
+          />
+        </ColorPickerWrapper>
+        <DeleteForeverIcon onClick={() => dbUtil.deleteTask(task.id)} />
+      </SubWrapper>
+    </TaskWrapper>
   );
 }
