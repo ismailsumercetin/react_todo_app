@@ -20,7 +20,7 @@ const TaskInput = styled.input.attrs((props) => ({
   }
   padding: 5px;
   border: none;
-  border-bottom: 2px solid red;
+  border-bottom: 2px solid lightgray;
 `;
 
 const AddTaskButton = styled.button`

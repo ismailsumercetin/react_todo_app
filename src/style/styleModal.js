@@ -17,6 +17,7 @@ const ModalCloseButtonTop = styled.span`
   font-size: 1.5rem;
   cursor: pointer;
   float: right;
+  margin-top: 10px;
 `;
 
 const ModalContent = styled.div`
