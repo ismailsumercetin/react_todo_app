@@ -129,7 +129,7 @@ export default function SignUpModal({ close, handleIsSignedIn }) {
                 Sign Up
               </ModalFormSigninButton>
             </ModalFormItemWrapper>
-            <ValidationWarningText>{validationError}</ValidationWarningText>
+            {validationError.length ? <ValidationWarningText>{validationError}</ValidationWarningText> : ""}
           </form>
         </ModalBody>
       </ModalContent>

@@ -84,7 +84,7 @@ export default function LoginModal({ close, handleIsSignedIn }) {
                 Login
               </ModalFormSigninButton>
             </ModalFormItemWrapper>
-            <ValidationWarningText>{validationError}</ValidationWarningText>
+            {validationError.length ? <ValidationWarningText>{validationError}</ValidationWarningText> : ""}
           </form>
         </ModalBody>
       </ModalContent>
