@@ -10,6 +10,7 @@ import {
   ModalFormItemWrapper,
   ModalFormSigninButton,
   VisibilityIconWrapper,
+  ValidationWarningText
 } from "../style/styleModal";
 
 //icons
@@ -23,6 +24,7 @@ export default function LoginModal({ close, handleIsSignedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pwVisibility, setPwVisibility] = useState(false);
+  const [validationError, setValidationError] = useState("");
 
   useEffect(() => {
     modalRoot.appendChild(el);
@@ -33,7 +35,7 @@ export default function LoginModal({ close, handleIsSignedIn }) {
 
   const handleLogin = (e, email, password) => {
     e.preventDefault();
-    loginUser(email, password, handleIsSignedIn, close);
+    loginUser(email, password, handleIsSignedIn, close, setValidationError);
   };
 
   const handleVisibility = () => {
@@ -82,6 +84,7 @@ export default function LoginModal({ close, handleIsSignedIn }) {
                 Login
               </ModalFormSigninButton>
             </ModalFormItemWrapper>
+            <ValidationWarningText>{validationError}</ValidationWarningText>
           </form>
         </ModalBody>
       </ModalContent>

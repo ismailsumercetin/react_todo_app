@@ -13,7 +13,7 @@ const signupUser = (username, email, password, handleIsSignedIn, setValidationEr
     });
 };
 
-const loginUser = (email, password, handleIsSignedIn, close) => {
+const loginUser = (email, password, handleIsSignedIn, close, setValidationError) => {
   auth
     .signInWithEmailAndPassword(email, password)
     .then(() => {
@@ -21,7 +21,7 @@ const loginUser = (email, password, handleIsSignedIn, close) => {
       close();
     })
     .catch((error) => {
-      console.log(error);
+      setValidationError(error.message);
     });
 };
 
