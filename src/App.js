@@ -26,6 +26,10 @@ const App = ({ handleIsSignedOut }) => {
 
   const populateTasks = () => {
     const allTasks = tasks.map((task) => <Task key={task.id} task={task} />);
+
+    if(!allTasks.length)
+      return "No tasks to show";
+    
     return allTasks;
   };
 
