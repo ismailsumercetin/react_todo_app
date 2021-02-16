@@ -14,6 +14,7 @@ import { ModalBackground, ModalFormSigninButton } from "./style/styleModal";
 import { getCurrentUser } from "./auth_util";
 
 const BaseApp = () => {
+  
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -42,7 +43,7 @@ const BaseApp = () => {
   const handleAuthRender = () => {
     if (!getCurrentUser()) {
       return (
-        <div>
+        <>
           {showModal || showRegisterModal ? (
             <ModalBackground onClick={closeModalHandler} />
           ) : null}
@@ -67,7 +68,7 @@ const BaseApp = () => {
               Sign Up
             </ModalFormSigninButton>
           </div>
-        </div>
+        </>
       );
     }
     return <App handleIsSignedOut={handleIsSignedOut} />;
