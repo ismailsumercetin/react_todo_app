@@ -33,4 +33,36 @@ const AddTaskButton = styled.button`
   cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
 `;
 
-export { AppWrapper, TaskWrapper, TaskInput, AddTaskButton };
+// display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+const FilterBar = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0 auto;
+  margin-top: 15px;
+  padding: 35px 10px 35px 10px;
+  border-radius: 8px;
+  
+  width: 60%;
+  word-break: break-word;
+  background-color: #e0ebeb;
+
+  & label {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+  }
+
+  & input[type=checkbox] {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+  }
+
+  & input[type=text] {
+    margin-left: 15px;
+  }
+`;
+
+export { AppWrapper, TaskWrapper, TaskInput, AddTaskButton, FilterBar };
