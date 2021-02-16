@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 
 //components
 import Task from "./Task";
@@ -20,17 +20,18 @@ const App = ({ handleIsSignedOut }) => {
   const [input, setInput] = useState("");
 
   useEffect(() => {
+    //important -> passing state
     dbUtil.getCurrentUserTasks(setTasks);
   }, []);
 
-  const populateTasks = useMemo(() => {
+  const populateTasks = () => {
     const allTasks = tasks.map((task) => <Task key={task.id} task={task} />);
 
     if(!allTasks.length)
       return "No tasks to show";
     
     return allTasks;
-  }, [tasks]);
+  };
 
   return (
     <div>
@@ -48,13 +49,15 @@ const App = ({ handleIsSignedOut }) => {
             id="addTaskButton"
             disabled={!input.trim()}
             type="submit"
-            onClick={() => dbUtil.addTask(input, getCurrentUser().uid, setInput)}
+            onClick={() =>
+              dbUtil.addTask(input, getCurrentUser().uid, setInput)
+            }
           >
             Add Task
           </AddTaskButton>
         </form>
       </AppWrapper>
-      <TaskWrapper>{populateTasks}</TaskWrapper>
+      <TaskWrapper>{populateTasks()}</TaskWrapper>
     </div>
   );
 };
