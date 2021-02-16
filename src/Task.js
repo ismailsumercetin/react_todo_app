@@ -26,11 +26,12 @@ export default function Task({ task }) {
   };
 
   const updateTask = (e) => {
-    const updatedTask = e.target.textContent;
-
-    if (updatedTask !== task.task && updatedTask) {
-      dbUtil.updateTask(task.id, updatedTask);
-    }
+    let updatedTask = e.target.textContent.trim();
+    
+    (updatedTask !== task.task && !!updatedTask.length) ? 
+    dbUtil.updateTask(task.id, updatedTask) : 
+    dbUtil.deleteTask(task.id);
+   
   };
 
   const listItemTextPrimary = () => {
